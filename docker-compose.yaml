@@ -1,0 +1,26 @@
+version: '3'
+services:
+  zookeeper:
+    image: 'ubuntu:18.04'
+    command: '/kafka_2.13-2.8.2/bin/zookeeper-server-start.sh config/zookeeper.properties'
+    ports:
+      - '2181:2181'
+    volumes:
+      - '.:/app'
+  kafka:
+    image: 'ubuntu:18.04'
+    command: '/kafka_2.13-2.8.2/bin/kafka-server-start.sh config/server.properties'
+    ports:
+      - '9092:9092'
+    volumes:
+      - '.:/app'
+  data_producer:
+    image: 'python:3'
+    command: 'bin/kafka-topics.sh --create --topic sample1 --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1 && python3 Data_Producer.py --topic hackathon quickstart-events --from-beginning --bootstrap-server localhost:9092'
+    volumes:
+      - '.:/app'
+  prediction_consumer:
+    image: 'python:3'
+    command: 'python3 Prediction_Consumer.py --topic hackathon quickstart-events --from-beginning --bootstrap-server localhost:9092'
+    volumes:
+      - '.:/app'

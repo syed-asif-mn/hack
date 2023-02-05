@@ -1,0 +1,4 @@
+[2023-02-05 12:56:58,514] INFO [Controller id=0 epoch=2] Sending UpdateMetadata request to brokers HashSet(0) for 0 partitions (state.change.logger)
+[2023-02-05 12:58:51,422] INFO [Controller id=0 epoch=2] Sending LeaderAndIsr request to broker 0 with 2 become-leader and 0 become-follower partitions (state.change.logger)
+[2023-02-05 12:58:52,907] INFO [Controller id=0 epoch=2] Sending UpdateMetadata request to brokers HashSet(0) for 2 partitions (state.change.logger)
+[2023-02-05 12:58:59,823] INFO [Broker id=0] Handling LeaderAndIsr request correlationId 1 from controller 0 for 2 partitions (state.change.logger)
