@@ -1,3 +1,4 @@
+import os
 from kafka import KafkaConsumer, KafkaProducer
 from Initializer import Initialize
 import json
@@ -8,9 +9,10 @@ from pyspark.sql import DataFrame, SparkSession
 
 init_object = Initialize()
 spark = SparkSession.builder.appName("House Price Prediction").getOrCreate()
-                    
+KAFKA_BROKER = os.getenv("KAFKA_BROKER")
+
 class Prediction_Consumer():
-    rf_model = RandomForestRegressionModel.load("rfmodel")
+    
     def predict_prize(self, features):
         print(features)
         predicted_cost = rf_model.predict(features)
@@ -18,7 +20,7 @@ class Prediction_Consumer():
 
     def gather_data(self):
         consumer = KafkaConsumer(auto_offset_reset='latest',
-                                 bootstrap_servers=[init_object.kafka_host], api_version=(0, 10),
+                                 bootstrap_servers=[KAFKA_BROKER], api_version=(0, 10),
                                  consumer_timeout_ms=1000)
 
         consumer.subscribe(topics=['hackathon'])  # Subscribe to a pattern
@@ -27,8 +29,9 @@ class Prediction_Consumer():
             for message in consumer:
                 if message.topic == "hackathon":
                     value_bytes = (message.value.decode())
-                    value = value_bytes.decode('utf8')
-                    dense_vector_list = json.loads(value)
+                    print("Received Message: ")
+                    print(value_bytes)
+                    dense_vector_list = json.loads(value_bytes)
                     dense_vector = np.array(dense_vector_list).reshape((-1, 1))
                     predicted_cost = self.predict_prize(dense_vector)
                     print ("Predicted Cost: ", predicted_cost)
@@ -36,3 +39,4 @@ class Prediction_Consumer():
 if __name__ == '__main__':
     pred_consumer = Prediction_Consumer()
     pred_consumer.gather_data()
+    rf_model = RandomForestRegressionModel.load("generated_models/rfmodel")

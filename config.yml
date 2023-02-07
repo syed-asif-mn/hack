@@ -1,0 +1,5 @@
+settings:
+  kafka_host: localhost
+  log_path: ./logs/
+  project_name: Housing_Price_Prediction
+  log_level: DEBUG

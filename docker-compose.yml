@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  zookeeper:
+    image: 'wurstmeister/zookeeper'
+    container_name: 'zookeeper'
+    ports:
+      - "2181:2181"
+  kafka:
+    image: 'wurstmeister/kafka'
+    container_name: 'kafka'
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 'kafka'
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_CREATE_TOPICS: 'hackathon:5:1'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    links: 
+     - 'zookeeper'
+  data_producer:
+    container_name: 'producer'
+    command: 'python3 Data_Producer.py --topic hackathon quickstart-events --from-beginning --bootstrap-server kafka:9092'
+    volumes:
+      - '.:/app'
+    build: './'
+    environment:
+      KAFKA_BROKER: 'kafka:9092'
+    links: 
+     - 'kafka'
+  prediction_consumer:
+    container_name: 'consumer'
+    command: 'python3 Prediction_Consumer.py --topic hackathon quickstart-events --from-beginning --bootstrap-server kafka:9092'
+    volumes:
+      - '.:/app'
+    build: './'
+    environment:
+      KAFKA_BROKER: 'kafka:9092'
+    links: 
+     - 'data_producer'
