@@ -1,4 +1,4 @@
-## Predict the House Price for New York Housing Dataset using PySpark. 
+## House Pricing Prediction for New York Housing Dataset using PySpark. 
 
   #### House price prediction - training.ipynb - Model training and evaluation. 
   [View on Kaggle](https://www.kaggle.com/syedasifmn/housing-price-prediction-training/)
